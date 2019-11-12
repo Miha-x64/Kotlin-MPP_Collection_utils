@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "DEPRECATION")
+@file:Suppress("NOTHING_TO_INLINE", "DEPRECATION", "UNCHECKED_CAST")
 package net.aquadc.collections
 
 import kotlin.jvm.JvmField
