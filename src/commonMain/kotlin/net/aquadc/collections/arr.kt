@@ -75,9 +75,12 @@ inline class Arr<E> // yep, it's invariant, because has set() method, similarly 
         array.contentToString()
 
     // array-style setter
-    inline operator fun set(index: Int, value: E) {
+    inline operator fun set(index: Int, value: E): E {
+        val old = array[index]
         (array as Array<E>)[index] = value
         // in Array<T>, T may be either Any or E, both should be safe
+
+        return old as E
     }
 
     companion object {
