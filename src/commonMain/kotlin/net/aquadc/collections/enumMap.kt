@@ -11,12 +11,12 @@ inline class InlineEnumMap<K : Enum<K>, V>
 // factory
 
 inline fun <reified K : Enum<K>, V> enumMapOf(): InlineEnumMap<K, V> =
-    InlineEnumMap(arrayOfUnset(enumValues<K>().size))
+    InlineEnumMap<K, V>(Array<Any?>(enumValues<K>().size) { Unset })
 
 inline fun <reified K : Enum<K>, V> enumMapOf(
     k: K, v: V
 ): InlineEnumMap<K, V> {
-    val values = arrayOfUnset(enumValues<K>().size)
+    val values = Array<Any?>(enumValues<K>().size) { Unset }
     values[k.ordinal] = v
     return InlineEnumMap(values)
 }
@@ -25,7 +25,7 @@ inline fun <reified K : Enum<K>, V> enumMapOf(
     k0: K, v0: V,
     k1: K, v1: V
 ): InlineEnumMap<K, V> {
-    val values = arrayOfUnset(enumValues<K>().size)
+    val values = Array<Any?>(enumValues<K>().size) { Unset }
     values[k0.ordinal] = v0
     values[k1.ordinal] = v1
     return InlineEnumMap(values)
@@ -36,7 +36,7 @@ inline fun <reified K : Enum<K>, V> enumMapOf(
     k1: K, v1: V,
     k2: K, v2: V
 ): InlineEnumMap<K, V> {
-    val values = arrayOfUnset(enumValues<K>().size)
+    val values = Array<Any?>(enumValues<K>().size) { Unset }
     values[k0.ordinal] = v0
     values[k1.ordinal] = v1
     values[k2.ordinal] = v2
@@ -49,7 +49,7 @@ inline fun <reified K : Enum<K>, V> enumMapOf(
     k2: K, v2: V,
     k3: K, v3: V
 ): InlineEnumMap<K, V> {
-    val values = arrayOfUnset(enumValues<K>().size)
+    val values = Array<Any?>(enumValues<K>().size) { Unset }
     values[k0.ordinal] = v0
     values[k1.ordinal] = v1
     values[k2.ordinal] = v2
@@ -64,7 +64,7 @@ inline fun <reified K : Enum<K>, V> enumMapOf(
     k3: K, v3: V,
     k4: K, v4: V
 ): InlineEnumMap<K, V> {
-    val values = arrayOfUnset(enumValues<K>().size)
+    val values = Array<Any?>(enumValues<K>().size) { Unset }
     values[k0.ordinal] = v0
     values[k1.ordinal] = v1
     values[k2.ordinal] = v2
@@ -81,7 +81,7 @@ inline fun <reified K : Enum<K>, V> enumMapOf(
     k4: K, v4: V,
     k5: K, v5: V
 ): InlineEnumMap<K, V> {
-    val values = arrayOfUnset(enumValues<K>().size)
+    val values = Array<Any?>(enumValues<K>().size) { Unset }
     values[k0.ordinal] = v0
     values[k1.ordinal] = v1
     values[k2.ordinal] = v2
@@ -100,7 +100,7 @@ inline fun <reified K : Enum<K>, V> enumMapOf(
     k5: K, v5: V,
     k6: K, v6: V
 ): InlineEnumMap<K, V> {
-    val values = arrayOfUnset(enumValues<K>().size)
+    val values = Array<Any?>(enumValues<K>().size) { Unset }
     values[k0.ordinal] = v0
     values[k1.ordinal] = v1
     values[k2.ordinal] = v2
@@ -121,7 +121,7 @@ inline fun <reified K : Enum<K>, V> enumMapOf(
     k6: K, v6: V,
     k7: K, v7: V
 ): InlineEnumMap<K, V> {
-    val values = arrayOfUnset(enumValues<K>().size)
+    val values = Array<Any?>(enumValues<K>().size) { Unset }
     values[k0.ordinal] = v0
     values[k1.ordinal] = v1
     values[k2.ordinal] = v2
@@ -176,9 +176,12 @@ operator fun <K : Enum<K>, V> InlineEnumMap<K, V>.get(key: K): V? {
     return if (value === Unset) null else value as V
 }
 
-// not really views
+// keys, values
 
-fun <K : Enum<K>> InlineEnumMap<K, *>.keys(): InlineEnumSet<K> {
+@Deprecated("renamed for more clarity", ReplaceWith("copyKeys()", "net.aquadc.collections.copyKeys"))
+fun <K : Enum<K>> InlineEnumMap<K, *>.keys(): InlineEnumSet<K> = copyKeys()
+
+fun <K : Enum<K>> InlineEnumMap<K, *>.copyKeys(): InlineEnumSet<K> {
     require(values.size <= 64) { "enum type ${this::class} must have no more than 64 constants" }
     var set = 0L
     values.forEachIndexed { i, it ->
@@ -188,7 +191,10 @@ fun <K : Enum<K>> InlineEnumMap<K, *>.keys(): InlineEnumSet<K> {
     return InlineEnumSet(set)
 }
 
-inline fun <V> InlineEnumMap<*, V>.values(): Arr<V> =
+@Deprecated("renamed for more clarity", ReplaceWith("copyValues()", "net.aquadc.collections.copyValues"))
+inline fun <V> InlineEnumMap<*, V>.values(): Arr<V> = copyValues()
+
+inline fun <V> InlineEnumMap<*, V>.copyValues(): Arr<V> =
     valuesTo(arrOfNulls<V>(count()))
 
 @Suppress("UNCHECKED_CAST") @PublishedApi
@@ -204,6 +210,9 @@ internal fun <V> InlineEnumMap<*, V>.valuesTo(arr: Arr<in V>): Arr<V> {
     }
     return arr as Arr<V>
 }
+
+inline fun <K : Enum<K>, V> InlineEnumMap<K, V>.copy(): InlineEnumMap<K, V> =
+    InlineEnumMap(values.copyOf())
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified K : Enum<K>, V, R> InlineEnumMap<K, V>.map(transform: (K, V) -> R): Arr<R> {
@@ -225,8 +234,5 @@ inline fun <reified K : Enum<K>, V, R> InlineEnumMap<K, V>.map(transform: (K, V)
 }
 
 // util
-
-@PublishedApi internal fun arrayOfUnset(size: Int): Array<Any?> =
-    Array(size) { Unset } // let the whole for-loop be in this method
 
 @PublishedApi @JvmField @JvmSynthetic internal val Unset = Any()
