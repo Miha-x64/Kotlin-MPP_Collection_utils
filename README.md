@@ -5,6 +5,10 @@ MPP re-implementation of some collections as `inline` classes.
 
  [![Download](https://api.bintray.com/packages/miha-x64/maven/Collection-utils/images/download.svg) ](https://bintray.com/miha-x64/maven/Collection-utils/_latestVersion)
  ```
+repositories {
+    maven { url 'https://dl.bintray.com/miha-x64/maven' }
+}
+...
 implementation 'net.aquadc.collections:Collection-utils:1.0-alpha01'
 implementation 'net.aquadc.collections:Collection-utils-(js|jvm|linux):1.0-alpha01'
 ```
