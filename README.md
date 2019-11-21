@@ -1,11 +1,12 @@
 
-# Kotlin MPP Collection utils
+# Kotlin-MPP Collection utils
 
 MPP re-implementation of some collections as `inline` classes.
 
  [![Download](https://api.bintray.com/packages/miha-x64/maven/Collection-utils/images/download.svg) ](https://bintray.com/miha-x64/maven/Collection-utils/_latestVersion)
  ```
 repositories {
+    maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     maven { url 'https://dl.bintray.com/miha-x64/maven' }
 }
 ...
