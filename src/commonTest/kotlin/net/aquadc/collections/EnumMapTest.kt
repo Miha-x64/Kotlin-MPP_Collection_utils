@@ -32,8 +32,8 @@ class EnumMapTest {
     private val randomValues = arrOf("", "none", "None", "nope", "pub", "fn")
     private fun check(map: InlineEnumMap<LazyThreadSafetyMode, String>, keys: Arr<LazyThreadSafetyMode>, values: Arr<String>) {
         check(keys.size == values.size)
-        assertEquals(keys, map.keys().toArr())
-        assertEquals(values, map.values())
+        assertEquals(keys, map.copyKeys().toArr())
+        assertEquals(values, map.copyValues())
         assertEquals(keys.size, map.count())
         assertEquals(keys.isEmpty(), map.isEmpty())
         assertEquals(keys.zip(values), map.map(::Pair))
