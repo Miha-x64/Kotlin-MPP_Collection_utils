@@ -83,6 +83,42 @@ inline class Arr<E> // yep, it's invariant, because has set() method, similarly 
         return old as E
     }
 
+    // transforms. Unfortunately, they could not be added as extensions because they would compete with Kotlin's ones.
+    // By the way, kotlinc seem not to generate instance box methods for inline non-overrides
+
+    inline fun <R> map(transform: (E) -> R): Arr<R> =
+        Arr(Array<Any?>(size) { transform(array[it] as E) })
+
+    inline fun mapToInt(transform: (E) -> Int): IntArray =
+        IntArray(size) { transform(array[it] as E) }
+
+    inline fun mapToLong(transform: (E) -> Long): LongArray =
+        LongArray(size) { transform(array[it] as E) }
+
+    inline fun mapToFloat(transform: (E) -> Float): FloatArray =
+        FloatArray(size) { transform(array[it] as E) }
+
+    inline fun mapToDouble(transform: (E) -> Double): DoubleArray =
+        DoubleArray(size) { transform(array[it] as E) }
+
+
+    inline fun <R> mapIndexed(transform: (index: Int, E) -> R): Arr<R> =
+        Arr(Array<Any?>(size) { transform(it, array[it] as E) })
+
+    inline fun mapIndexedToInt(transform: (index: Int, E) -> Int): IntArray =
+        IntArray(size) { transform(it, array[it] as E) }
+
+    inline fun mapIndexedToLong(transform: (index: Int, E) -> Long): LongArray =
+        LongArray(size) { transform(it, array[it] as E) }
+
+    inline fun mapIndexedToFloat(transform: (index: Int, E) -> Float): FloatArray =
+        FloatArray(size) { transform(it, array[it] as E) }
+
+    inline fun mapIndexedToDouble(transform: (index: Int, E) -> Double): DoubleArray =
+        DoubleArray(size) { transform(it, array[it] as E) }
+
+    // constants
+
     companion object {
         val Empty: Arr<Nothing> = Arr(emptyArray())
     }
@@ -106,34 +142,3 @@ inline fun <E> Arr(size: Int, init: (Int) -> E): Arr<E> =
         for (i in 0 until size) it[i] = init(i)
     })
 
-
-inline fun <E, R> Arr<out E>.map(transform: (E) -> R): Arr<R> =
-    Arr(Array<Any?>(size) { transform(array[it] as E) })
-
-inline fun <E> Arr<out E>.map(transform: (E) -> Int): IntArray =
-    IntArray(size) { transform(array[it] as E) }
-
-inline fun <E> Arr<out E>.map(transform: (E) -> Long): LongArray =
-    LongArray(size) { transform(array[it] as E) }
-
-inline fun <E> Arr<out E>.map(transform: (E) -> Float): FloatArray =
-    FloatArray(size) { transform(array[it] as E) }
-
-inline fun <E> Arr<out E>.map(transform: (E) -> Double): DoubleArray =
-    DoubleArray(size) { transform(array[it] as E) }
-
-
-inline fun <E, R> Arr<out E>.mapIndexed(transform: (index: Int, E) -> R): Arr<R> =
-    Arr(Array<Any?>(size) { transform(it, array[it] as E) })
-
-inline fun <E> Arr<out E>.mapIndexed(transform: (index: Int, E) -> Int): IntArray =
-    IntArray(size) { transform(it, array[it] as E) }
-
-inline fun <E> Arr<out E>.mapIndexed(transform: (index: Int, E) -> Long): LongArray =
-    LongArray(size) { transform(it, array[it] as E) }
-
-inline fun <E> Arr<out E>.mapIndexed(transform: (index: Int, E) -> Float): FloatArray =
-    FloatArray(size) { transform(it, array[it] as E) }
-
-inline fun <E> Arr<out E>.mapIndexed(transform: (index: Int, E) -> Double): DoubleArray =
-    DoubleArray(size) { transform(it, array[it] as E) }

@@ -16,7 +16,7 @@ repositories {
 
 def GROUP_ID = 'net.aquadc.collections'
 def ARTIFACT_ID = rootProject.name
-def LIBRARY_VERSION_NAME = '1.0-alpha03'
+def LIBRARY_VERSION_NAME = '1.0-alpha04'
 
 group GROUP_ID
 version LIBRARY_VERSION_NAME
