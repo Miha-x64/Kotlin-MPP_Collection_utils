@@ -83,6 +83,15 @@ inline class Arr<E> // yep, it's invariant, because has set() method, similarly 
         return old as E
     }
 
+    fun copy(fromIndex: Int = 0, toIndex: Int = array.size): Arr<E> =
+        if (fromIndex == toIndex) {
+            check(fromIndex >= 0)
+            check(toIndex <= array.size)
+            Empty as Arr<E>
+        } else {
+            Arr(array.copyOfRange(fromIndex, toIndex))
+        }
+
     // transforms. Unfortunately, they could not be added as extensions because they would compete with Kotlin's ones.
     // By the way, kotlinc seem not to generate instance box methods for inline non-overrides
 
