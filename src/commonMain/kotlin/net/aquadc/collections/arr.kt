@@ -44,15 +44,19 @@ inline class Arr<E> // yep, it's invariant, because has set() method, similarly 
 
     override fun listIterator(): ListIterator<E> =
         if (array.isEmpty()) emptyList<E>().listIterator()
-        else array.asList().listIterator() as ListIterator<E>
+        else ListArrayIterator(array, 0, 0, array.size) as ListIterator<E>
 
     override fun listIterator(index: Int): ListIterator<E> =
         if (array.isEmpty()) emptyList<E>().listIterator(index)
-        else array.asList().listIterator(index) as ListIterator<E>
+        else {
+            val sz = array.size
+            listIteratorBoundsCheck(index, sz)
+            ListArrayIterator(array, index, index, sz) as ListIterator<E>
+        }
 
     override fun subList(fromIndex: Int, toIndex: Int): List<E> =
         if (array.isEmpty()) emptyList<E>().subList(fromIndex, toIndex)
-        else array.asList().subList(fromIndex, toIndex) as List<E>
+        else array.subList(fromIndex, toIndex) as List<E>
 
     @Deprecated("hiding reserved override as a precaution", level = DeprecationLevel.HIDDEN)
     override fun equals(other: Any?): Boolean =
