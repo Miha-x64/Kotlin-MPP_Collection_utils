@@ -1,14 +1,17 @@
 @file:Suppress("NOTHING_TO_INLINE", "DEPRECATION")
+@file:JvmName("EnumSets")
 package net.aquadc.collections
 
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
 /**
  * Immutable inline EnumSet implementation.
  */
+@Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS")
 inline class InlineEnumSet<E : Enum<E>>
-@Deprecated("private") constructor(
+@PublishedApi internal constructor(
     @PublishedApi @JvmSynthetic @JvmField internal val set: Long
 )
 

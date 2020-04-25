@@ -1,12 +1,15 @@
-@file:Suppress("NOTHING_TO_INLINE", "DEPRECATION", "UNCHECKED_CAST")
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+@file:JvmName("EnumMaps")
 package net.aquadc.collections
 
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
 
+@Suppress("NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS")
 inline class InlineEnumMap<K : Enum<K>, V>
-@Deprecated("private") constructor(@PublishedApi internal val values: Array<Any? /* V | Unset */>)
+@PublishedApi internal constructor(@PublishedApi internal val values: Array<Any? /* V | Unset */>)
 
 // factory
 

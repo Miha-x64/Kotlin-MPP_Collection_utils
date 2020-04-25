@@ -1,7 +1,9 @@
-@file:Suppress("NOTHING_TO_INLINE", "DEPRECATION", "UNCHECKED_CAST")
+@file:Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
+@file:JvmName("Arrs")
 package net.aquadc.collections
 
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -9,9 +11,9 @@ import kotlin.jvm.JvmSynthetic
  * It is more lightweight than List because there's no additional wrapper,
  * and greater than Array because does not require reified type parameters.
  */
-@Suppress("OVERRIDE_BY_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS")
+@Suppress("OVERRIDE_BY_INLINE", "RESERVED_MEMBER_INSIDE_INLINE_CLASS", "NON_PUBLIC_PRIMARY_CONSTRUCTOR_OF_INLINE_CLASS")
 inline class Arr<E> // yep, it's invariant, because has set() method, similarly to Arrays.asList
-@Deprecated("private") constructor(
+@PublishedApi internal constructor(
     @PublishedApi @JvmSynthetic @JvmField internal val array: Array<out Any?>
 ) : List<E>, RandomAccess {
 
