@@ -134,7 +134,9 @@ inline class Arr<E> // yep, it's invariant, because has set() method, similarly 
 
     // constants
 
+    @Suppress("INAPPLICABLE_JVM_FIELD")
     companion object {
+        @JvmField
         val Empty: Arr<Nothing> = Arr(emptyArray())
     }
 
