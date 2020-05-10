@@ -14,13 +14,14 @@ class ArraySubListTest {
     @Test fun bigTo() { assertFailsWith(IndexOutOfBoundsException::class) { arrayOf<Any>().subList(0, 1) } }
     @Test fun fromGtTo() { assertFailsWith(IllegalArgumentException::class) { arrayOf<Any>("").subList(1, 0) } }
 
-    @Test fun empty() = assertSame(emptyList(), arrayOf<Any>().subList(0, 0))
-    @Test fun emptySlice0() = assertSame(listOf(), arrayOf<Any>().subList(0, 0))
-    @Test fun emptySlice1() = assertSame(listOf(), arrayOf<Any>("").subList(1, 1))
+    @Test fun empty()       = assertSame(emptyList(), arrayOf<Any>().subList(0, 0))
+    @Test fun emptySlice0() = assertSame(emptyList(), arrayOf<Any>().subList(0, 0))
+    @Test fun emptySlice1() = assertSame(emptyList(), arrayOf<Any>("").subList(1, 1))
 
     @Test fun full() {
         val subList = arrayOf("").subList(0, 1)
         assertEquals(listOf(""), subList)
+        assertArrayEquals(arrayOf(""), subList.toTypedArray())
         assertEquals(1, subList.size)
         assertFalse(subList.isEmpty())
 
@@ -36,7 +37,7 @@ class ArraySubListTest {
         assertFalse(subList.containsAll(listOf("whatever")))
         assertFalse(subList.containsAll(listOf("", "whatever")))
 
-        assertTrue(arrayOf("").contentEquals(subList.toTypedArray()))
+        assertArrayEquals(arrayOf(""), subList.toTypedArray())
 
         val i = subList.iterator()
         assertTrue(i.hasNext())
@@ -68,14 +69,17 @@ class ArraySubListTest {
         assertEquals(0, subList.indexOf(""))
         assertEquals(0, subList.lastIndexOf(""))
 
-        assertEquals(emptyList(), subList.subList(0, 0))
-        assertEquals(emptyList(), subList.subList(1, 1))
+        assertSame(emptyList(), subList.subList(0, 0))
+        assertSame(emptyList(), subList.subList(0, 0))
+        assertSame(emptyList(), subList.subList(1, 1))
         assertEquals(listOf(""), subList.subList(0, 1))
+        assertArrayEquals(arrayOf(""), subList.subList(0, 1).toTypedArray())
     }
 
     @Test fun end() {
         val subList = arrayOf("1", "2", "3").subList(1, 3)
         assertEquals(listOf("2", "3"), subList)
+        assertArrayEquals(arrayOf("2", "3"), subList.toTypedArray())
         assertEquals(2, subList.size)
         assertFalse(subList.isEmpty())
 
@@ -99,7 +103,7 @@ class ArraySubListTest {
         assertFalse(subList.containsAll(listOf("1")))
         assertFalse(subList.containsAll(listOf("1", "2")))
 
-        assertTrue(arrayOf("2", "3").contentEquals(subList.toTypedArray()))
+        assertArrayEquals(arrayOf("2", "3"), subList.toTypedArray())
 
         val i = subList.iterator()
         assertTrue(i.hasNext())
@@ -130,5 +134,42 @@ class ArraySubListTest {
         assertEquals(0, li.previousIndex())
         assertEquals("2", li.previous())
     }
+
+    @Test fun step() { //                       [                   )  )  )
+        assertEquals(listOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7      ).subList(1,  8, 3))
+        assertEquals(listOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8   ).subList(1,  8, 3))
+        assertEquals(listOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8   ).subList(1,  9, 3))
+        assertEquals(listOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).subList(1,  8, 3))
+        assertEquals(listOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).subList(1,  9, 3))
+        assertEquals(listOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).subList(1, 10, 3))
+
+        assertEquals(listOf("a", "b", "c", "d"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 7, 2))
+        assertEquals(listOf("a", "b", "c", "d"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 8, 2))
+        assertEquals(listOf( 1 ,  2 ,  3 ,  4 ), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(1, 8, 2))
+
+        assertEquals(listOf("a", "b"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 7, 2).subList(0, 2))
+        assertEquals(listOf("b", "c"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 7, 2).subList(1, 3))
+        assertEquals(listOf("c", "d"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 7, 2).subList(2, 4))
+    }
+
+    @Test fun stepArrays() {
+        assertArrayEquals(arrayOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7      ).subList(1,  8, 3).toTypedArray())
+        assertArrayEquals(arrayOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8   ).subList(1,  8, 3).toTypedArray())
+        assertArrayEquals(arrayOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8   ).subList(1,  9, 3).toTypedArray())
+        assertArrayEquals(arrayOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).subList(1,  8, 3).toTypedArray())
+        assertArrayEquals(arrayOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).subList(1,  9, 3).toTypedArray())
+        assertArrayEquals(arrayOf(1, 4, 7), arrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).subList(1, 10, 3).toTypedArray())
+
+        assertArrayEquals(arrayOf("a", "b", "c", "d"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 7, 2).toTypedArray())
+        assertArrayEquals(arrayOf("a", "b", "c", "d"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 8, 2).toTypedArray())
+        assertArrayEquals(arrayOf( 1 ,  2 ,  3 ,  4 ), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(1, 8, 2).toTypedArray())
+
+        assertArrayEquals(arrayOf("a", "b"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 7, 2).subList(0, 2).toTypedArray())
+        assertArrayEquals(arrayOf("b", "c"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 7, 2).subList(1, 3).toTypedArray())
+        assertArrayEquals(arrayOf("c", "d"), arrayOf("a", 1, "b", 2, "c", 3, "d", 4).subList(0, 7, 2).subList(2, 4).toTypedArray())
+    }
+
+    private fun assertArrayEquals(expected: Array<out Any?>, actual: Array<out Any?>) =
+        assertTrue(expected.contentEquals(actual))
 
 }
