@@ -63,21 +63,39 @@ inline fun <E : Enum<E>> InlineEnumSet<E>.containsAll(elements: InlineEnumSet<E>
 
 inline fun <reified E : Enum<E>, R> InlineEnumSet<E>.map(transform: (E) -> R): Arr<R> {
     val outArr = arrOfNulls<R>(size)
-    if (size != 0) { // forEachIndexed:
+    forEachIndexed { index, value -> outArr[index] = transform(value) }
+    @Suppress("UNCHECKED_CAST")
+    return outArr as Arr<R>
+}
+
+inline fun <reified E : Enum<E>> InlineEnumSet<E>.forEach(block: (E) -> Unit) {
+    if (size != 0) {
+        val values = enumValues<E>()
+        var ord = 0
+        var mask = set
+        while (mask != 0L) {
+            if ((mask and 1L) == 1L) {
+                block(values[ord])
+            }
+            mask = mask ushr 1
+            ord++
+        }
+    }
+}
+inline fun <reified E : Enum<E>> InlineEnumSet<E>.forEachIndexed(block: (Int, E) -> Unit) {
+    if (size != 0) {
         val values = enumValues<E>()
         var idx = 0
         var ord = 0
         var mask = set
         while (mask != 0L) {
             if ((mask and 1L) == 1L) {
-                outArr[idx++] = transform(values[ord])
+                block(idx++, values[ord])
             }
             mask = mask ushr 1
             ord++
         }
     }
-    @Suppress("UNCHECKED_CAST")
-    return outArr as Arr<R>
 }
 
 inline fun <reified E : Enum<E>> InlineEnumSet<E>.toArr(): Arr<E> =
