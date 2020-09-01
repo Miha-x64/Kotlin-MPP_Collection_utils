@@ -93,30 +93,39 @@ afterEvaluate {
     }
 }
 
-bintray {
+private static Properties createPropertiesFrom(File file) {
     Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    def u = properties.getProperty('bintray.user')
-    def k = properties.getProperty('bintray.apikey')
-    if (u == null || k == null) throw null
-    user = u
-    key = k
+    properties.load(file.newDataInputStream())
+    return properties
+}
 
-    publish = true
+File file = project.rootProject.file('local.properties')
+Properties properties;
+String u, k;
+if (file.isFile() &&
+        (properties = createPropertiesFrom(file)) != null &&
+        (u = properties.getProperty('bintray.user')) != null &&
+        (k = properties.getProperty('bintray.apikey')) != null) {
+    bintray {
+        user = u
+        key = k
 
-    pkg {
-        repo = 'maven'
-        name = ARTIFACT_ID
-        userOrg = 'miha-x64'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Miha-x64/Kotlin-MPP_Collection_utils.git'
-        websiteUrl = 'https://github.com/Miha-x64/Kotlin-MPP_Collection_utils/'
-        issueTrackerUrl = 'https://github.com/Miha-x64/Kotlin-MPP_Collection_utils/issues'
+        publish = true
 
-        version {
-            name = LIBRARY_VERSION_NAME
-//            vcsTag = LIBRARY_VERSION_NAME
-            released = new Date()
+        pkg {
+            repo = 'maven'
+            name = ARTIFACT_ID
+            userOrg = 'miha-x64'
+            licenses = ['Apache-2.0']
+            vcsUrl = 'https://github.com/Miha-x64/Kotlin-MPP_Collection_utils.git'
+            websiteUrl = 'https://github.com/Miha-x64/Kotlin-MPP_Collection_utils/'
+            issueTrackerUrl = 'https://github.com/Miha-x64/Kotlin-MPP_Collection_utils/issues'
+
+            version {
+                name = LIBRARY_VERSION_NAME
+//              vcsTag = LIBRARY_VERSION_NAME
+                released = new Date()
+            }
         }
     }
 }
