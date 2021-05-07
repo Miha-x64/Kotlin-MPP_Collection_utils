@@ -1,15 +1,7 @@
-buildscript {
-    dependencies {
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0"
-    }
-}
 plugins {
-    id 'org.jetbrains.kotlin.multiplatform' version '1.4.0'
+    id 'org.jetbrains.kotlin.multiplatform'
     id 'base'
-    id 'maven-publish'
 }
-apply plugin: 'com.jfrog.bintray'
 
 repositories {
     mavenCentral()
@@ -27,7 +19,7 @@ apply plugin: 'maven-publish'
 kotlin {
     jvm()
     js {
-        browser {}
+//        browser {} // requires Chrome-headless to run tests
         nodejs {}
     }
     // For ARM, should be changed to iosArm32 or iosArm64
@@ -75,9 +67,6 @@ kotlin {
             dependsOn noJvmMain
         }
         linuxTest {}
-        all {
-            languageSettings.enableLanguageFeature("InlineClasses")
-        }
     }
 }
 
@@ -92,49 +81,3 @@ afterEvaluate {
         }
     }
 }
-
-private static Properties createPropertiesFrom(File file) {
-    Properties properties = new Properties()
-    properties.load(file.newDataInputStream())
-    return properties
-}
-
-File file = project.rootProject.file('local.properties')
-Properties properties;
-String u, k;
-if (file.isFile() &&
-        (properties = createPropertiesFrom(file)) != null &&
-        (u = properties.getProperty('bintray.user')) != null &&
-        (k = properties.getProperty('bintray.apikey')) != null) {
-    bintray {
-        user = u
-        key = k
-
-        publish = true
-
-        pkg {
-            repo = 'maven'
-            name = ARTIFACT_ID
-            userOrg = 'miha-x64'
-            licenses = ['Apache-2.0']
-            vcsUrl = 'https://github.com/Miha-x64/Kotlin-MPP_Collection_utils.git'
-            websiteUrl = 'https://github.com/Miha-x64/Kotlin-MPP_Collection_utils/'
-            issueTrackerUrl = 'https://github.com/Miha-x64/Kotlin-MPP_Collection_utils/issues'
-
-            version {
-                name = LIBRARY_VERSION_NAME
-//              vcsTag = LIBRARY_VERSION_NAME
-                released = new Date()
-            }
-        }
-    }
-}
-
-bintrayUpload.doFirst {
-    publications = publishing.publications
-            .collect { it.name }
-            .findAll { it != "kotlinMultiplatform" }
-}
-
-bintrayUpload.dependsOn publishToMavenLocal
-// publishing script from https://natanfudge.github.io/fudgedocs/publish-kotlin-mpp-lib.html
